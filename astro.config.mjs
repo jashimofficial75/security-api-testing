@@ -1,5 +1,9 @@
 import {defineConfig, envField} from 'astro/config';
 
+import {satteri} from '@astrojs/markdown-satteri';
+
+import {callouts} from './src/lib/markdown-callouts.mjs';
+
 /**
  * A STATIC site: every page is prerendered to plain files in `dist/` (no
  * adapter, no server code). The platform serves them as they are; a root
@@ -39,7 +43,8 @@ export default defineConfig({
     },
   },
   // No Markdown code blocks here; Shiki's inline styles would break the CSP.
-  markdown: {syntaxHighlight: false},
+  // `> [!TIP]` blockquotes become callout boxes (src/lib/markdown-callouts.mjs).
+  markdown: {syntaxHighlight: false, processor: satteri({mdastPlugins: [callouts]})},
   security: {
     // A Content-Security-Policy in every page, with a hash for each script and
     // style Astro emits. The browser talks only to this host (`connect-src

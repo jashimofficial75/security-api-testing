@@ -13,6 +13,7 @@
     "platform": "node scripts/platform.mjs"
   },
   "dependencies": {
+    "@astrojs/markdown-satteri": "0.4.4",
     "@stripe/stripe-js": "10.1.0",
     "astro": "^7.3.8"
   },

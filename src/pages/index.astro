@@ -1,66 +1,259 @@
 ---
 /**
- * Home: sections from `src/content/site.ts`, and the three latest posts from
- * `src/content/blog/`. Fully static: no JavaScript of its own.
+ * Home: hero, the six level cards (with progress from this browser), the
+ * 10-week roadmap at a glance, who it is for, the tools, FAQ. Words in
+ * src/content/site.ts, lessons from the `lessons` collection.
  */
-import PostCard from '../components/PostCard.astro';
-import {HOME} from '../content/site';
+import {HOME, LEVELS, WEEKS} from '../content/site';
 import Base from '../layouts/Base.astro';
-import {publishedPosts} from '../lib/posts';
+import {allLessons, bn, lessonHref} from '../lib/course';
 
-const latest = (await publishedPosts()).slice(0, 3);
+const lessons = await allLessons();
+const levels = LEVELS.map(level => {
+  const items = lessons.filter(lesson => lesson.data.level === level.id);
+  return {...level, items, minutes: items.reduce((sum, lesson) => sum + lesson.data.minutes, 0)};
+});
+const hours = (minutes: number) => bn(Math.max(1, Math.round(minutes / 60)));
 ---
 
 <Base>
   <section class="hero">
-    <div class="wrap center">
+    <div class="wrap hero-inner">
       <p class="eyebrow">{HOME.hero.eyebrow}</p>
       <h1>{HOME.hero.title}</h1>
       <p class="lede">{HOME.hero.body}</p>
       <div class="actions">
         <a class="button" href={HOME.hero.primary.href}>{HOME.hero.primary.label}</a>
-        <a class="button ghost" href={HOME.hero.secondary.href}>{HOME.hero.secondary.label}</a>
+        <a class="button outline" href={HOME.hero.secondary.href}>{HOME.hero.secondary.label}</a>
       </div>
+      <ul class="stats" aria-label="এক নজরে">
+        <li><strong>{bn(lessons.length)}টি</strong> লেসন</li>
+        <li><strong>১০</strong> সপ্তাহ</li>
+        <li><strong>১০০%</strong> ফ্রি</li>
+        <li><strong>{bn(lessons.length * 5)}টি</strong> কুইজ প্রশ্ন</li>
+      </ul>
     </div>
   </section>
 
-  <section class="wrap section" aria-labelledby="features-title">
-    <h2 id="features-title" class="center">{HOME.features.title}</h2>
+  <section class="wrap section" aria-labelledby="levels-title">
+    <div class="section-head">
+      <h2 id="levels-title">ছয়টি লেভেলে পুরো কোর্স</h2>
+      <a href="/lessons/">সব লেসন দেখুন →</a>
+    </div>
+    <p class="muted" data-progress-text>অগ্রগতি এই ব্রাউজারেই সেভ হয়, কোনো অ্যাকাউন্ট লাগে না।</p>
     <div class="grid grid-3">
       {
-        HOME.features.items.map(feature => (
+        levels.map(level => (
+          <a
+            class:list={['card', 'card-link', 'card-level', `lvl-${level.id}`]}
+            href={level.items[0] ? lessonHref(level.items[0]) : '/lessons/'}
+            data-level-ids={level.items.map(lesson => lesson.id).join(',')}
+          >
+            <span class="badge">লেভেল {bn(level.id)}</span>
+            <h3 class="card-title">{level.name}</h3>
+            <span class="muted level-summary">{level.summary}</span>
+            <span class="meta">
+              {level.weeks} · {bn(level.items.length)}টি লেসন · প্রায় {hours(level.minutes)} ঘণ্টা
+            </span>
+            <progress class="mini-progress" max="100" value="0" aria-label={`${level.name} লেভেলের অগ্রগতি`} />
+            <span class="meta" data-level-text>{bn(level.items.length)}টির মধ্যে ০টি সম্পন্ন</span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="roadmap-title">
+    <div class="section-head">
+      <h2 id="roadmap-title">১০ সপ্তাহের রোডম্যাপ</h2>
+      <a href="/roadmap/">বিস্তারিত রোডম্যাপ →</a>
+    </div>
+    <ol class="weeks">
+      {
+        WEEKS.map(week => (
+          <li class={`lvl-${week.level}`}>
+            <span class="week-dot" aria-hidden="true" />
+            <span class="week-label">সপ্তাহ {bn(week.week)}</span>
+            <span class="week-goal">{week.goal}</span>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="wrap section" aria-labelledby="who-title">
+    <h2 id="who-title">{HOME.who.title}</h2>
+    <div class="grid grid-2 who">
+      {
+        HOME.who.items.map(item => (
           <div class="card">
-            <h3>{feature.title}</h3>
-            <p class="muted">{feature.body}</p>
+            <h3>{item.title}</h3>
+            <p class="muted">{item.body}</p>
           </div>
         ))
       }
     </div>
   </section>
 
-  {
-    latest.length > 0 && (
-      <section class="wrap section" aria-labelledby="latest-title">
-        <div class="section-head">
-          <h2 id="latest-title">Latest from the blog</h2>
-          <a href="/blog/">All posts →</a>
-        </div>
-        <div class="grid grid-3">
-          {latest.map(post => (
-            <PostCard post={post} />
-          ))}
-        </div>
-      </section>
-    )
-  }
+  <section class="wrap section" aria-labelledby="tools-title">
+    <div class="section-head">
+      <h2 id="tools-title">যেসব ফ্রি টুল শিখবেন</h2>
+      <a href="/toolbox/">টুলবক্স দেখুন →</a>
+    </div>
+    <ul class="tool-strip">
+      {HOME.tools.map(tool => <li>{tool}</li>)}
+    </ul>
+  </section>
 
-  <section class="wrap section">
-    <div class="card cta">
-      <div>
-        <h2>{HOME.cta.title}</h2>
-        <p class="muted">{HOME.cta.body}</p>
-      </div>
-      <a class="button" href="/contact/">Contact us</a>
+  <section class="wrap section" aria-labelledby="safety-title">
+    <div class="card safety">
+      <h2 id="safety-title">⚠️ আমাদের নিরাপত্তা নীতি</h2>
+      <p>
+        সব সিকিউরিটি অনুশীলন শুধু নিজের Stripe Sandbox, নিজের লোকাল অ্যাপ আর ইচ্ছাকৃতভাবে দুর্বল ফ্রি ল্যাবে (OWASP Juice Shop, crAPI, VAmPI, DVWA, PortSwigger Academy)। অনুমতি ছাড়া কোনো আসল সাইটে কখনোই নয়।
+      </p>
+      <a href="/about/#ethics">নৈতিকতা নীতি পড়ুন →</a>
     </div>
   </section>
+
+  <section class="wrap section" aria-labelledby="faq-title">
+    <div class="section-head">
+      <h2 id="faq-title">সাধারণ প্রশ্ন (FAQ)</h2>
+      <a href="/career/">আরও প্রশ্ন ও ক্যারিয়ার গাইড →</a>
+    </div>
+    {
+      HOME.faq.map(item => (
+        <details class="accordion">
+          <summary>{item.q}</summary>
+          <p>{item.a}</p>
+        </details>
+      ))
+    }
+  </section>
 </Base>
+
+<style>
+  .hero {
+    padding-block: 3.5rem 2.5rem;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--primary) 8%, var(--bg)), var(--bg));
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.35;
+    max-width: 22ch;
+  }
+
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .stats li {
+    padding: 0.35rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+  }
+
+  .stats strong {
+    color: var(--primary);
+  }
+
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.25rem 1rem;
+  }
+
+  .card-level {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .card-level .badge {
+    align-self: flex-start;
+  }
+
+  .level-summary {
+    display: block;
+    flex: 1;
+  }
+
+  .weeks {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .weeks {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .weeks li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+  }
+
+  .week-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--lvl);
+    align-self: center;
+  }
+
+  .week-label {
+    font-weight: 600;
+    color: var(--lvl);
+  }
+
+  .week-goal {
+    flex-basis: 100%;
+    color: var(--text-muted);
+  }
+
+  .who h3 {
+    margin-bottom: 0.25rem;
+  }
+
+  .tool-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tool-strip li {
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    font-family: var(--mono);
+    font-size: 0.9rem;
+  }
+
+  .safety {
+    border-left: 4px solid var(--danger);
+    background: var(--danger-bg);
+  }
+</style>

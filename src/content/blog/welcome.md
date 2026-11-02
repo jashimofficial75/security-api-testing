@@ -1,20 +1,29 @@
 ---
-title: Welcome to the blog
-description: What you will find here, and how often we write.
-publishedAt: 2026-10-01
-author: The team
-cover: ../../assets/blog/welcome.webp
-coverAlt: ''
-tags: [news]
+title: "পেমেন্ট QA একাডেমিতে স্বাগতম"
+description: "কেন এই ফ্রি বাংলা কোর্স, কাদের জন্য, আর কীভাবে ১০ সপ্তাহে পেমেন্ট, API ও Webhook টেস্টিং শিখবেন।"
+publishedAt: 2026-11-02
+author: "SQA Mentor"
+tags: ["ঘোষণা"]
 ---
 
-This is the first post. Every post is a **Markdown file** in `src/content/blog/`: the file name
-becomes its address, so this one lives at `/blog/welcome/`.
+বাংলাদেশে ই-কমার্স, ফিনটেক আর অনলাইন কোর্সের ব্যবসা দ্রুত বাড়ছে। প্রতিটির কেন্দ্রে আছে পেমেন্ট। আর পেমেন্টে একটা ছোট বাগ মানে সরাসরি টাকার ক্ষতি আর গ্রাহকের আস্থা হারানো।
 
-## What we will write about
+অথচ পেমেন্ট টেস্টিং শেখার মতো গোছানো বাংলা রিসোর্স প্রায় নেই। সেই অভাব পূরণ করতেই **পেমেন্ট QA একাডেমি**।
 
-- News and updates
-- Guides that answer the questions we hear most
-- Stories from the people we work with
+## কী শিখবেন
 
-Thanks for reading.
+- পেমেন্ট সিস্টেম কীভাবে কাজ করে, HTTP আর JSON-এর বেসিক
+- Postman, Newman আর Playwright দিয়ে API ও UI টেস্ট
+- Stripe Sandbox-এ টেস্ট কার্ড দিয়ে পেমেন্ট ফ্লো টেস্ট
+- Webhook সেটআপ, Stripe CLI আর Signature Verification
+- নৈতিক সীমার মধ্যে থেকে পেমেন্ট-স্পেসিফিক Security Testing
+- CI/CD, লোড টেস্ট, Reconciliation আর ক্যারিয়ার প্রস্তুতি
+
+## কীভাবে শুরু করবেন
+
+১. [কোর্স রোডম্যাপ](/roadmap/) দেখে নিন।
+২. [প্রথম লেসন](/lessons/how-payments-work/) থেকে শুরু করুন।
+৩. প্রতিটি লেসনের শেষে কুইজ দিন, অগ্রগতি আপনার ব্রাউজারেই সেভ থাকবে।
+৪. শেষে [ক্যাপস্টোন প্রজেক্ট](/capstone/) করে পোর্টফোলিও বানান।
+
+সব কিছু ফ্রি, শুধু ফ্রি টুল দিয়ে। শুভকামনা!

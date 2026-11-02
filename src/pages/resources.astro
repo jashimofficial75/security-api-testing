@@ -1,0 +1,78 @@
+---
+/** The free resource library (src/content/resources.json), grouped. */
+import {getCollection} from 'astro:content';
+
+import Base from '../layouts/Base.astro';
+import {bn} from '../lib/course';
+
+const resources = await getCollection('resources');
+const groups = [...new Set(resources.map(item => item.data.group))];
+---
+
+<Base title="ফ্রি রিসোর্স লাইব্রেরি" description="Stripe, Postman, Webhook, OWASP, অটোমেশন আর বাংলাদেশি গেটওয়ের সেরা ফ্রি ডকুমেন্টেশন, কোর্স ও প্র্যাকটিস ল্যাবের বাছাই করা তালিকা।">
+  <div class="wrap">
+    <header class="page-head">
+      <h1>ফ্রি রিসোর্স লাইব্রেরি</h1>
+      <p class="lede">{bn(resources.length)}টি বাছাই করা ফ্রি রিসোর্স। প্রতিটির পাশে লেখা আছে কী কাজে লাগবে।</p>
+      <p class="note small">🔗 লিংক যাচাই করুন: বাইরের সাইট সময়ের সাথে ঠিকানা বদলায়। কোনো লিংক কাজ না করলে রিসোর্সের নাম দিয়ে সার্চ করুন এবং <a href="/contact/">আমাদের জানান</a>।</p>
+    </header>
+    {
+      groups.map(group => (
+        <section class="group" aria-labelledby={`group-${group}`}>
+          <h2 id={`group-${group}`}>{group}</h2>
+          <ul class="resource-list">
+            {resources
+              .filter(item => item.data.group === group)
+              .map(item => (
+                <li class="card">
+                  <a href={item.data.url} target="_blank" rel="noopener noreferrer" class="resource-title">
+                    {item.data.title}
+                    <span class="sr-only"> (নতুন ট্যাবে খুলবে)</span> ↗
+                  </a>
+                  <span class="badge">{item.data.lang === 'bn' ? 'বাংলা' : 'English'}</span>
+                  <p class="muted">{item.data.note}</p>
+                </li>
+              ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+</Base>
+
+<style>
+  .note {
+    padding: 0.5rem 0.85rem;
+    border-left: 4px solid var(--warning);
+    background: var(--surface);
+    border-radius: 8px;
+    max-width: 65ch;
+  }
+
+  .group {
+    margin-top: 2rem;
+  }
+
+  .resource-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 768px) {
+    .resource-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .resource-title {
+    font-weight: 600;
+    margin-right: 0.5rem;
+  }
+
+  .resource-list p {
+    margin: 0.25rem 0 0;
+  }
+</style>

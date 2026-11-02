@@ -79,3 +79,38 @@ export function postJsonLd(post: {
     ...(image && {image}),
   };
 }
+
+/** A lesson's `LearningResource`, part of the free course. */
+export function lessonJsonLd(lesson: {path: string; title: string; description: string; minutes: number; level: string}): JsonLd {
+  const url = absoluteUrl(lesson.path);
+  const id = ids();
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'LearningResource',
+    name: lesson.title,
+    description: lesson.description,
+    inLanguage: SITE.lang,
+    learningResourceType: 'Lesson',
+    educationalLevel: lesson.level,
+    timeRequired: `PT${lesson.minutes}M`,
+    isAccessibleForFree: true,
+    provider: {'@type': 'Organization', ...(id && {'@id': id.organization}), name: SITE.name},
+    ...(url && {url}),
+  };
+}
+
+/** The course itself (the lesson list page). */
+export function courseJsonLd(course: {path: string; name: string; description: string}): JsonLd {
+  const url = absoluteUrl(course.path);
+  const id = ids();
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Course',
+    name: course.name,
+    description: course.description,
+    inLanguage: SITE.lang,
+    isAccessibleForFree: true,
+    provider: {'@type': 'Organization', ...(id && {'@id': id.organization}), name: SITE.name},
+    ...(url && {url}),
+  };
+}

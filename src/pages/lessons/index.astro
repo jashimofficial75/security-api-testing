@@ -1,0 +1,101 @@
+---
+/**
+ * All lessons, grouped by level. Every card is in the HTML; the site script
+ * filters them in place by level (chips) and by words (Bangla or English,
+ * `?q=` from the header search). Without JavaScript the full list shows.
+ */
+import LessonCard from '../../components/LessonCard.astro';
+import {LEVELS} from '../../content/site';
+import Base from '../../layouts/Base.astro';
+import {allLessons, bn} from '../../lib/course';
+import {courseJsonLd} from '../../lib/json-ld';
+
+const lessons = await allLessons();
+const description = `পেমেন্ট টেস্টিংয়ের ${bn(lessons.length)}টি ফ্রি বাংলা লেসন: লেভেল অনুযায়ী ফিল্টার করুন বা শিরোনাম ও কিওয়ার্ড দিয়ে খুঁজুন। প্রতিটি লেসনের শেষে কুইজ।`;
+const jsonLd = courseJsonLd({path: '/lessons/', name: 'পেমেন্ট টেস্টিং: API, Webhook ও Security (বাংলা)', description});
+---
+
+<Base title="সব লেসন" description={description} jsonLd={jsonLd}>
+  <div class="wrap" data-lesson-browser>
+    <header class="page-head">
+      <h1>সব লেসন</h1>
+      <p class="lede">{description}</p>
+      <p class="muted small" data-progress-text></p>
+    </header>
+
+    <form class="lesson-search" role="search" action="/lessons/" method="get">
+      <label for="lesson-q">শিরোনাম বা কিওয়ার্ড দিয়ে খুঁজুন</label>
+      <div class="search-field search-row">
+        <input id="lesson-q" name="q" type="search" placeholder="যেমন: Webhook, রিফান্ড, idempotency" autocomplete="off" data-lesson-query />
+        <button type="button" class="icon-button" data-clear-query aria-label="খোঁজা মুছুন" hidden>✕</button>
+      </div>
+    </form>
+
+    <div data-filters>
+      <p class="sr-only" id="filter-label">লেভেল অনুযায়ী ফিল্টার</p>
+      <ul class="chips" aria-labelledby="filter-label">
+        <li><button type="button" class="chip" data-filter-level="all" aria-pressed="true">সব লেভেল</button></li>
+        {
+          LEVELS.map(level => (
+            <li>
+              <button type="button" class:list={['chip', `lvl-${level.id}`]} data-filter-level={String(level.id)} aria-pressed="false">
+                {level.name}
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <p class="muted" role="status" data-result-count>{bn(lessons.length)}টি লেসন</p>
+
+    {
+      LEVELS.map(level => {
+        const items = lessons.filter(lesson => lesson.data.level === level.id);
+        return (
+          items.length > 0 && (
+            <section class:list={['level-group', `lvl-${level.id}`]} data-level-group aria-labelledby={`level-${level.id}`}>
+              <h2 id={`level-${level.id}`}>
+                লেভেল {bn(level.id)}: {level.name} <span class="muted small">({level.weeks})</span>
+              </h2>
+              <p class="muted">{level.summary}</p>
+              <div class="grid grid-3">
+                {items.map(lesson => (
+                  <LessonCard lesson={lesson} searchable />
+                ))}
+              </div>
+            </section>
+          )
+        );
+      })
+    }
+  </div>
+</Base>
+
+<style>
+  .lesson-search label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .search-row {
+    display: flex;
+    gap: 0.5rem;
+    max-width: 36rem;
+  }
+
+  .search-row input {
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  .level-group {
+    margin-top: 2.5rem;
+  }
+
+  .level-group h2 {
+    border-left: 4px solid var(--lvl);
+    padding-left: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+</style>

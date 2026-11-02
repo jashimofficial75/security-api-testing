@@ -1,0 +1,11 @@
+---
+/** A level pill in the level's colour, always with its name (never colour alone). */
+import {levelName} from '../lib/course';
+
+interface Props {
+  level: number;
+}
+const {level} = Astro.props;
+---
+
+<span class:list={['badge', `lvl-${level}`]}>লেভেল {['০', '১', '২', '৩', '৪', '৫'][level]}: {levelName(level)}</span>

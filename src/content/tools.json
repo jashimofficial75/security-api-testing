@@ -1,0 +1,250 @@
+[
+  {
+    "id": "postman",
+    "name": "Postman",
+    "category": "API টেস্টিং",
+    "use": "API-তে রিকোয়েস্ট পাঠানো, রেসপন্স দেখা, collection ও environment বানানো আর JavaScript দিয়ে assertion লেখা। Stripe API টেস্টের মূল টুল।",
+    "url": "https://www.postman.com/downloads/",
+    "install": [
+      "অফিসিয়াল পাতা থেকে আপনার OS-এর জন্য Postman ডাউনলোড করুন",
+      "ইনস্টল করে ফ্রি অ্যাকাউন্ট দিয়ে লগইন করুন",
+      "একটি নতুন Workspace বানান, যেমন 'Payment QA'",
+      "প্রথম রিকোয়েস্ট: GET https://jsonplaceholder.typicode.com/posts/1"
+    ],
+    "lessons": ["postman-first-api-call", "postman-collections-environments", "postman-tests-data-driven", "stripe-api-testing", "idempotency-testing"]
+  },
+  {
+    "id": "newman",
+    "name": "Newman",
+    "category": "API টেস্টিং",
+    "use": "Postman collection কমান্ড লাইন থেকে চালানোর টুল। CI/CD-তে API টেস্ট চালাতে লাগে।",
+    "url": "https://github.com/postmanlabs/newman",
+    "install": [
+      "আগে Node.js ইনস্টল করুন",
+      "টার্মিনালে চালান: npm install -g newman",
+      "যাচাই করুন: newman --version",
+      "Postman থেকে collection ও environment Export করে চালান: newman run collection.json -e env.json"
+    ],
+    "lessons": ["newman-cli-reports", "cicd-github-actions"]
+  },
+  {
+    "id": "newman-reporter-htmlextra",
+    "name": "newman-reporter-htmlextra",
+    "category": "API টেস্টিং",
+    "use": "Newman রানের সুন্দর, বিস্তারিত HTML রিপোর্ট বানায়: প্রতিটি রিকোয়েস্ট, assertion আর রেসপন্স টাইম।",
+    "url": "https://github.com/DannyDainton/newman-reporter-htmlextra",
+    "install": [
+      "চালান: npm install -g newman-reporter-htmlextra",
+      "রিপোর্টসহ রান: newman run collection.json -r cli,htmlextra",
+      "নির্দিষ্ট জায়গায় রাখতে: --reporter-htmlextra-export reports/report.html"
+    ],
+    "lessons": ["newman-cli-reports", "cicd-github-actions"]
+  },
+  {
+    "id": "stripe-cli",
+    "name": "Stripe CLI",
+    "category": "Webhook",
+    "use": "টার্মিনাল থেকে Stripe API কল, টেস্ট ইভেন্ট তৈরি (trigger) আর Webhook ইভেন্ট লোকাল সার্ভারে ফরোয়ার্ড (listen) করার অফিসিয়াল টুল।",
+    "url": "https://docs.stripe.com/stripe-cli",
+    "install": [
+      "macOS: brew install stripe/stripe-cli/stripe",
+      "Windows: অফিসিয়াল ডকের নির্দেশনা অনুযায়ী scoop দিয়ে বা GitHub release থেকে zip নামিয়ে ইনস্টল করুন",
+      "লগইন: stripe login (ব্রাউজারে অনুমতি দিন)",
+      "যাচাই: stripe --version",
+      "Webhook ফরোয়ার্ড: stripe listen --forward-to localhost:4242/webhook"
+    ],
+    "lessons": ["stripe-cli-webhooks", "webhook-test-cases", "webhook-signature-verification", "stripe-sandbox-setup"]
+  },
+  {
+    "id": "stripe-dashboard",
+    "name": "Stripe Dashboard (Test Mode)",
+    "category": "সাধারণ",
+    "use": "নিজের Stripe অ্যাকাউন্টের Test Mode বা Sandbox: টেস্ট পেমেন্ট, ইভেন্ট, Webhook delivery লগ আর API key দেখা।",
+    "url": "https://dashboard.stripe.com",
+    "install": [
+      "ইমেইল দিয়ে ফ্রি Stripe অ্যাকাউন্ট খুলুন",
+      "Test Mode বা Sandbox চালু আছে কি না নিশ্চিত করুন",
+      "Developers অংশ থেকে Test key দেখুন; আসল key কোথাও শেয়ার করবেন না",
+      "Workbench বা Events অংশে টেস্ট পেমেন্টের ইভেন্ট দেখুন"
+    ],
+    "lessons": ["stripe-sandbox-setup", "stripe-payment-flow", "stripe-test-cards"]
+  },
+  {
+    "id": "webhook-site",
+    "name": "webhook.site",
+    "category": "Webhook",
+    "use": "ইনস্টল ছাড়াই একটি অস্থায়ী URL দেয়, যেখানে আসা প্রতিটি Webhook রিকোয়েস্টের হেডার ও বডি দেখা যায়। শুধু টেস্ট ডেটার জন্য।",
+    "url": "https://webhook.site",
+    "install": [
+      "ব্রাউজারে সাইট খুলুন; একটি ইউনিক URL পাবেন",
+      "সেই URL-এ Postman বা curl দিয়ে টেস্ট রিকোয়েস্ট পাঠান",
+      "বাম পাশে রিকোয়েস্টের হেডার ও বডি দেখুন",
+      "এই URL পাবলিক, তাই কোনো আসল বা ব্যক্তিগত ডেটা পাঠাবেন না"
+    ],
+    "lessons": ["webhook-basics", "webhook-debug-tools"]
+  },
+  {
+    "id": "beeceptor",
+    "name": "Beeceptor",
+    "category": "Webhook",
+    "use": "মক API ও রিকোয়েস্ট ইন্সপেক্টর: Webhook ধরে দেখা আর নির্দিষ্ট রেসপন্স (যেমন 500) ফেরত দিয়ে retry আচরণ টেস্ট করা।",
+    "url": "https://beeceptor.com",
+    "install": [
+      "সাইটে গিয়ে একটি endpoint নাম দিন",
+      "পাওয়া URL-এ রিকোয়েস্ট পাঠিয়ে লাইভ দেখুন",
+      "Mock rule দিয়ে নির্দিষ্ট Status Code বা বডি ফেরত দিন"
+    ],
+    "lessons": ["webhook-debug-tools", "webhook-test-cases"]
+  },
+  {
+    "id": "ngrok",
+    "name": "ngrok",
+    "category": "Webhook",
+    "use": "লোকাল সার্ভারকে একটি পাবলিক HTTPS URL দেয়, যাতে বাইরের সার্ভিস (যেমন SSLCommerz sandbox) Webhook পাঠাতে পারে।",
+    "url": "https://ngrok.com",
+    "install": [
+      "ফ্রি অ্যাকাউন্ট খুলে আপনার OS-এর জন্য ngrok ডাউনলোড করুন",
+      "ড্যাশবোর্ডের authtoken দিয়ে: ngrok config add-authtoken <আপনার-টোকেন>",
+      "লোকাল পোর্ট খুলুন: ngrok http 4242",
+      "কাজ শেষে টানেল বন্ধ করুন (Ctrl+C)"
+    ],
+    "lessons": ["webhook-debug-tools", "bangladesh-gateways-sandbox"]
+  },
+  {
+    "id": "cloudflared",
+    "name": "Cloudflare Tunnel (cloudflared)",
+    "category": "Webhook",
+    "use": "ngrok-এর বিকল্প: লোকাল সার্ভারের জন্য অস্থায়ী পাবলিক HTTPS URL, Webhook টেস্টে কাজে লাগে।",
+    "url": "https://github.com/cloudflare/cloudflared",
+    "install": [
+      "GitHub release বা প্যাকেজ ম্যানেজার থেকে cloudflared ইনস্টল করুন (macOS: brew install cloudflared)",
+      "দ্রুত টানেল: cloudflared tunnel --url http://localhost:4242",
+      "টার্মিনালে দেখানো trycloudflare URL ব্যবহার করুন",
+      "কাজ শেষে Ctrl+C দিয়ে বন্ধ করুন"
+    ],
+    "lessons": ["webhook-debug-tools"]
+  },
+  {
+    "id": "nodejs",
+    "name": "Node.js",
+    "category": "সাধারণ",
+    "use": "JavaScript রানটাইম: Newman, Playwright, Express দিয়ে ছোট Webhook সার্ভার চালাতে লাগে।",
+    "url": "https://nodejs.org",
+    "install": [
+      "অফিসিয়াল সাইট থেকে LTS ভার্সন ডাউনলোড করে ইনস্টল করুন",
+      "যাচাই: node -v এবং npm -v",
+      "নতুন প্রজেক্ট: npm init -y"
+    ],
+    "lessons": ["newman-cli-reports", "playwright-api-ui-testing", "stripe-cli-webhooks", "webhook-signature-verification"]
+  },
+  {
+    "id": "vscode",
+    "name": "VS Code",
+    "category": "সাধারণ",
+    "use": "ফ্রি কোড এডিটর: টেস্ট স্ক্রিপ্ট, JSON, Markdown বাগ রিপোর্ট লেখা আর টার্মিনাল চালানো।",
+    "url": "https://code.visualstudio.com",
+    "install": [
+      "অফিসিয়াল সাইট থেকে ডাউনলোড করে ইনস্টল করুন",
+      "Extensions থেকে 'Playwright Test for VSCode' যোগ করুন",
+      "View → Terminal দিয়ে ভেতরের টার্মিনাল খুলুন"
+    ],
+    "lessons": ["playwright-api-ui-testing", "webhook-signature-verification"]
+  },
+  {
+    "id": "playwright",
+    "name": "Playwright",
+    "category": "অটোমেশন",
+    "use": "ব্রাউজার UI আর API দুটোই অটোমেট করার ফ্রেমওয়ার্ক: Checkout ফ্লো ও API টেস্ট এক জায়গায়।",
+    "url": "https://playwright.dev",
+    "install": [
+      "নতুন ফোল্ডারে চালান: npm init playwright@latest",
+      "প্রশ্নের উত্তরে TypeScript বা JavaScript বেছে নিন",
+      "উদাহরণ টেস্ট চালান: npx playwright test",
+      "রিপোর্ট দেখুন: npx playwright show-report"
+    ],
+    "lessons": ["playwright-api-ui-testing", "cicd-github-actions"]
+  },
+  {
+    "id": "k6",
+    "name": "k6",
+    "category": "পারফরম্যান্স",
+    "use": "JavaScript দিয়ে লোড টেস্ট লেখার টুল। শুধু নিজের অ্যাপ বা টেস্ট পরিবেশে; Stripe-এর সার্ভারে লোড টেস্ট নয়।",
+    "url": "https://grafana.com/docs/k6/latest/",
+    "install": [
+      "macOS: brew install k6",
+      "Windows: winget install k6 --source winget",
+      "যাচাই: k6 version",
+      "স্ক্রিপ্ট চালান: k6 run script.js"
+    ],
+    "lessons": ["k6-load-testing"]
+  },
+  {
+    "id": "burp-suite-community",
+    "name": "Burp Suite Community",
+    "category": "সিকিউরিটি",
+    "use": "ব্রাউজার আর সার্ভারের মাঝে রিকোয়েস্ট ধরে দেখা ও বদলানোর টুল। শুধু নিজের অ্যাপ বা Juice Shop-এর মতো ল্যাবে।",
+    "url": "https://portswigger.net/burp/communitydownload",
+    "install": [
+      "অফিসিয়াল পাতা থেকে Community Edition ডাউনলোড করুন",
+      "ইনস্টল করে Temporary project দিয়ে খুলুন",
+      "Proxy → Open browser দিয়ে বিল্ট-ইন ব্রাউজার চালান",
+      "শুধু localhost-এ চলা ল্যাবে Intercept ব্যবহার করুন"
+    ],
+    "lessons": ["burp-zap-intercept", "payment-logic-vulnerabilities"]
+  },
+  {
+    "id": "owasp-zap",
+    "name": "OWASP ZAP",
+    "category": "সিকিউরিটি",
+    "use": "ফ্রি ওপেন সোর্স ওয়েব সিকিউরিটি স্ক্যানার ও প্রক্সি। শুধু নিজের অ্যাপ বা ইচ্ছাকৃতভাবে দুর্বল ল্যাবে।",
+    "url": "https://www.zaproxy.org",
+    "install": [
+      "অফিসিয়াল সাইট থেকে আপনার OS-এর ইনস্টলার নিন",
+      "ইনস্টল করে খুলুন",
+      "Manual Explore দিয়ে localhost-এর ল্যাব ব্রাউজ করুন",
+      "অন্য কারো সাইটে কখনো স্ক্যান চালাবেন না"
+    ],
+    "lessons": ["burp-zap-intercept", "owasp-top-10-intro"]
+  },
+  {
+    "id": "docker-desktop",
+    "name": "Docker Desktop",
+    "category": "সাধারণ",
+    "use": "Juice Shop, crAPI, VAmPI-এর মতো ল্যাব নিজের কম্পিউটারে আলাদা কন্টেইনারে নিরাপদে চালানোর জন্য।",
+    "url": "https://www.docker.com/products/docker-desktop/",
+    "install": [
+      "অফিসিয়াল পাতা থেকে Docker Desktop ডাউনলোড করুন",
+      "Windows-এ WSL 2 চালু করতে বলা হলে নির্দেশনা মেনে চলুন",
+      "যাচাই: docker --version",
+      "পরীক্ষা: docker run --rm -p 127.0.0.1:3000:3000 bkimminich/juice-shop"
+    ],
+    "lessons": ["burp-zap-intercept", "auth-authorization-testing", "payment-logic-vulnerabilities"]
+  },
+  {
+    "id": "git-github",
+    "name": "Git ও GitHub",
+    "category": "সাধারণ",
+    "use": "কোডের ভার্সন রাখা, পোর্টফোলিও দেখানো আর GitHub Actions-এ টেস্ট চালানো।",
+    "url": "https://git-scm.com",
+    "install": [
+      "git-scm.com থেকে Git ইনস্টল করুন",
+      "নাম সেট করুন: git config --global user.name \"আপনার নাম\"",
+      "github.com-এ ফ্রি অ্যাকাউন্ট খুলুন",
+      "প্রথম কমিটের আগে .gitignore-এ .env যোগ করুন"
+    ],
+    "lessons": ["cicd-github-actions", "portfolio-interview-prep"]
+  },
+  {
+    "id": "curl",
+    "name": "curl",
+    "category": "API টেস্টিং",
+    "use": "টার্মিনাল থেকে দ্রুত HTTP রিকোয়েস্ট পাঠানো। Stripe ডকের বেশিরভাগ উদাহরণ curl-এ।",
+    "url": "https://curl.se",
+    "install": [
+      "Windows 10/11, macOS ও বেশিরভাগ Linux-এ আগে থেকেই থাকে",
+      "যাচাই: curl --version",
+      "পরীক্ষা: curl https://jsonplaceholder.typicode.com/posts/1"
+    ],
+    "lessons": ["http-json-basics", "stripe-api-testing"]
+  }
+]

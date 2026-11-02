@@ -1,0 +1,200 @@
+[
+  {
+    "id": "postman-jsonplaceholder-crud",
+    "title": "Postman দিয়ে JSONPlaceholder-এ CRUD টেস্ট",
+    "level": 1,
+    "target": "JSONPlaceholder (ফ্রি নকল REST API)",
+    "targetUrl": "https://jsonplaceholder.typicode.com",
+    "goal": "GET, POST, PUT, PATCH ও DELETE রিকোয়েস্ট পাঠিয়ে Status Code ও বডি যাচাই করা, আর প্রতিটি রিকোয়েস্টে অন্তত একটি assertion লেখা।",
+    "steps": [
+      "Postman-এ 'JSONPlaceholder CRUD' নামে একটি collection বানান, আর base_url ভেরিয়েবলে https://jsonplaceholder.typicode.com রাখুন।",
+      "GET {{base_url}}/posts/1 পাঠান; Status 200 আর id = 1 যাচাইয়ের টেস্ট লিখুন।",
+      "POST {{base_url}}/posts পাঠান, বডি JSON: title, body, userId; Status 201 আর ফেরত আসা id যাচাই করুন।",
+      "PUT {{base_url}}/posts/1 দিয়ে পুরো পোস্ট আর PATCH দিয়ে শুধু title বদলান; রেসপন্সে নতুন মান আছে কি না দেখুন।",
+      "DELETE {{base_url}}/posts/1 পাঠিয়ে Status দেখুন।",
+      "GET {{base_url}}/posts/99999 দিয়ে একটি negative টেস্ট করুন।",
+      "পুরো collection Runner দিয়ে চালিয়ে ফল দেখুন।"
+    ],
+    "solution": [
+      "GET /posts/1: Status 200, বডিতে id, userId, title, body থাকে।",
+      "POST /posts: Status 201, সাধারণত id = 101 ফেরত আসে।",
+      "PUT ও PATCH: Status 200, রেসপন্সে পাঠানো মান ফেরত আসে।",
+      "DELETE /posts/1: Status 200, বডি খালি অবজেক্ট।",
+      "GET /posts/99999: Status 404, বডি খালি অবজেক্ট।",
+      "মনে রাখুন: JSONPlaceholder আসলে ডেটা সংরক্ষণ করে না, তাই POST-এর পরে GET করলে নতুন পোস্ট পাবেন না। এটা সার্ভিসের বৈশিষ্ট্য, বাগ নয়।"
+    ],
+    "lessons": ["http-json-basics", "postman-first-api-call", "postman-collections-environments"]
+  },
+  {
+    "id": "stripe-test-card-matrix",
+    "title": "নিজের Stripe Test Mode-এ টেস্ট কার্ড ম্যাট্রিক্স",
+    "level": 1,
+    "target": "নিজের Stripe অ্যাকাউন্টের Test Mode (Sandbox)",
+    "targetUrl": "https://docs.stripe.com/testing",
+    "goal": "বিভিন্ন টেস্ট কার্ড দিয়ে পেমেন্ট চালিয়ে প্রতিটির ফল, decline কোড আর PaymentIntent স্ট্যাটাসের একটি টেবিল বানানো।",
+    "steps": [
+      "Stripe Dashboard-এ Test Mode বা Sandbox চালু আছে কি না নিশ্চিত করুন।",
+      "Dashboard থেকে একটি টেস্ট Payment Link বানান, অথবা নিজের লোকাল Checkout ডেমো ব্যবহার করুন।",
+      "একটি টেবিল বানান: কার্ড নম্বর, প্রত্যাশিত ফল, আসল ফল, decline কোড, PaymentIntent স্ট্যাটাস।",
+      "4242 4242 4242 4242, 4000 0000 0000 0002, 4000 0000 0000 9995, 4000 0000 0000 0069, 4000 0000 0000 0127 দিয়ে একে একে পেমেন্ট করুন (মেয়াদ 12/34, CVC 123)।",
+      "4000 0025 0000 3155 দিয়ে 3D Secure-এ একবার Complete আর একবার Fail বেছে নিন।",
+      "প্রতিটি চেষ্টার পরে Dashboard-এ পেমেন্টের বিবরণ ও ইভেন্ট দেখে টেবিল পূরণ করুন।"
+    ],
+    "solution": [
+      "4242…: সফল, PaymentIntent স্ট্যাটাস succeeded।",
+      "…0002: card_declined (generic_decline); …9995: insufficient_funds; …0069: expired_card; …0127: incorrect_cvc।",
+      "decline হলে PaymentIntent সাধারণত requires_payment_method-এ ফিরে যায়, যাতে গ্রাহক আরেকটি কার্ড দিতে পারেন।",
+      "3155: প্রথমে requires_action; Complete দিলে succeeded, Fail দিলে পেমেন্ট ব্যর্থ।",
+      "ভালো টেবিলে UI-তে দেখানো বার্তাও লেখা থাকে: ব্যবহারকারী কি বুঝতে পারছেন কী ভুল হলো?"
+    ],
+    "lessons": ["stripe-sandbox-setup", "stripe-test-cards", "stripe-payment-flow", "payment-test-cases"]
+  },
+  {
+    "id": "stripe-idempotency-postman",
+    "title": "Postman দিয়ে Stripe-এ Idempotency টেস্ট",
+    "level": 2,
+    "target": "নিজের Stripe Test Mode-এর API",
+    "targetUrl": "https://docs.stripe.com/api/idempotent_requests",
+    "goal": "একই Idempotency-Key দিয়ে একই রিকোয়েস্ট বারবার পাঠালে মাত্র একটি PaymentIntent তৈরি হয় কি না, আর ভিন্ন প্যারামিটারে কী হয়, তা প্রমাণ করা।",
+    "steps": [
+      "Postman environment-এ secret_key ভেরিয়েবল বানান; মান শুধু Current value-তে রাখুন (sk_test_ দিয়ে শুরু), Initial value খালি রাখুন।",
+      "Authorization: Bearer Token = {{secret_key}}; POST https://api.stripe.com/v1/payment_intents, Body x-www-form-urlencoded: amount=2000, currency=usd।",
+      "Header-এ Idempotency-Key: lab-order-1001 দিন, রিকোয়েস্ট পাঠান, রেসপন্সের id নোট করুন।",
+      "হুবহু একই রিকোয়েস্ট আরও ২ বার পাঠান; id মিলিয়ে দেখুন।",
+      "একই key রেখে amount=3000 করে পাঠান; Status ও ত্রুটি বার্তা দেখুন।",
+      "নতুন key (Pre-request Script-এ {{$guid}}) দিয়ে পাঠান; নতুন id আসে কি না দেখুন।",
+      "Tests ট্যাবে assertion লিখুন যা প্রথম id সংরক্ষণ করে পরের রেসপন্সের সাথে মেলায়।"
+    ],
+    "solution": [
+      "একই key ও একই প্যারামিটার: প্রতিবার একই PaymentIntent id ফেরত আসে; Dashboard-এ মাত্র একটি PaymentIntent।",
+      "একই key কিন্তু ভিন্ন amount: Stripe ত্রুটি দেয় (সাধারণত 400, idempotency সংক্রান্ত error), কারণ key আগের প্যারামিটারের সাথে বাঁধা।",
+      "নতুন key: নতুন PaymentIntent তৈরি হয়।",
+      "দুইটি রিকোয়েস্ট একই key দিয়ে প্রায় একসাথে গেলে একটি 409 পেতে পারে।",
+      "শিক্ষা: অ্যাপকে প্রতিটি অর্ডারের জন্য স্থির, ইউনিক key পাঠাতে হবে, যাতে retry-তে দ্বিগুণ চার্জ না হয়।"
+    ],
+    "lessons": ["idempotency-testing", "stripe-api-testing", "postman-tests-data-driven"]
+  },
+  {
+    "id": "stripe-cli-express-webhook",
+    "title": "Stripe CLI ও লোকাল Express সার্ভারে Webhook টেস্ট",
+    "level": 3,
+    "target": "নিজের কম্পিউটারে চলা Express সার্ভার + নিজের Stripe Test Mode",
+    "targetUrl": "https://docs.stripe.com/stripe-cli",
+    "goal": "Stripe CLI দিয়ে টেস্ট ইভেন্ট লোকাল সার্ভারে এনে signature যাচাইসহ সঠিকভাবে গ্রহণ করা, আর সফল, ব্যর্থ ও ডুপ্লিকেট ইভেন্ট টেস্ট করা।",
+    "steps": [
+      "নতুন ফোল্ডারে npm init -y, তারপর npm install express stripe dotenv।",
+      "Stripe ডকের Webhook উদাহরণ মেনে POST /webhook বানান: express.raw({type: 'application/json'}) দিয়ে raw body নিন আর stripe.webhooks.constructEvent দিয়ে যাচাই করুন।",
+      "এক টার্মিনালে stripe listen --forward-to localhost:4242/webhook চালান; দেখানো whsec_ secret .env-এ রাখুন, সার্ভার চালু করুন।",
+      "আরেক টার্মিনালে stripe trigger payment_intent.succeeded আর stripe trigger payment_intent.payment_failed চালান।",
+      "সার্ভার লগে ইভেন্টের type ও id প্রিন্ট হচ্ছে কি না, আর listen টার্মিনালে 200 দেখাচ্ছে কি না দেখুন।",
+      "stripe events resend evt_XXXXXXXX দিয়ে একই ইভেন্ট আবার পাঠান; সার্ভার দ্বিতীয়বার কাজ করছে কি না দেখুন।",
+      "সার্ভার বন্ধ রেখে ইভেন্ট trigger করুন; listen টার্মিনালে কী দেখায় লিখে রাখুন।"
+    ],
+    "solution": [
+      "সঠিক সেটআপে listen টার্মিনালে প্রতিটি ইভেন্টের পাশে [200] দেখায়।",
+      "express.json() আগে চললে body বদলে যায় আর constructEvent signature ত্রুটি দেয়; Webhook রুটে raw body লাগবেই।",
+      "trigger একাধিক সম্পর্কিত ইভেন্ট তৈরি করে (যেমন payment_intent.created ও succeeded); কোড শুধু দরকারি type-এ কাজ করবে।",
+      "ডুপ্লিকেট: event.id সংরক্ষণ করে আগে প্রসেস হয়ে থাকলে কিছু না করে 200 ফেরত দেওয়া উচিত।",
+      "সার্ভার বন্ধ থাকলে CLI সংযোগ ত্রুটি দেখায়; আসল endpoint-এ Stripe পরে আবার চেষ্টা (retry) করে।"
+    ],
+    "lessons": ["stripe-cli-webhooks", "webhook-signature-verification", "webhook-test-cases", "webhook-basics"]
+  },
+  {
+    "id": "juice-shop-basket-manipulation",
+    "title": "Juice Shop-এ কার্ট ও দাম বদলানোর লজিক বাগ (Burp, লোকাল Docker)",
+    "level": 4,
+    "target": "নিজের কম্পিউটারে Docker-এ চলা OWASP Juice Shop",
+    "targetUrl": "https://owasp.org/www-project-juice-shop/",
+    "goal": "Burp Suite দিয়ে কার্টের রিকোয়েস্ট ধরে দেখা, পরিমাণ বা অন্য কার্টের ID বদলালে সার্ভার ঠিকভাবে আটকায় কি না যাচাই করা, আর প্রতিরোধের সুপারিশ লেখা।",
+    "steps": [
+      "শুধু লোকালে চালান: docker run --rm -p 127.0.0.1:3000:3000 bkimminich/juice-shop, তারপর http://localhost:3000 খুলুন।",
+      "Burp Suite Community-র Proxy → Open browser দিয়ে Juice Shop-এ একটি টেস্ট অ্যাকাউন্ট খুলুন (বানানো ইমেইল)।",
+      "কার্টে একটি পণ্য যোগ করুন, পরিমাণ বাড়ান; HTTP history-তে BasketItems-এর রিকোয়েস্ট খুঁজুন।",
+      "রিকোয়েস্টটি Repeater-এ পাঠিয়ে quantity ঋণাত্মক মান করে পাঠান; কার্টের মোট দাম দেখুন।",
+      "আপনার কার্ট দেখার রিকোয়েস্টে basket ID বদলে অন্য একটি সংখ্যা দিন; কী ফেরত আসে দেখুন।",
+      "প্রতিটি পর্যবেক্ষণের জন্য ছোট বাগ রিপোর্ট লিখুন: ধাপ, প্রত্যাশিত বনাম আসল ফল, প্রভাব, প্রতিকার।"
+    ],
+    "solution": [
+      "Juice Shop ইচ্ছা করে ঋণাত্মক quantity গ্রহণ করে, তাই মোট দাম শূন্যের নিচে নামতে পারে; বাস্তব অ্যাপে এটা Critical লজিক বাগ।",
+      "basket ID বদলালে অন্য ইউজারের কার্ট দেখা যায়: এটা BOLA/IDOR, কারণ সার্ভার মালিকানা যাচাই করে না।",
+      "প্রতিকার: সার্ভারে quantity-র সীমা (১ বা বেশি, সর্বোচ্চ সীমা) যাচাই, দাম সবসময় সার্ভারে হিসাব, প্রতিটি রিকোয়েস্টে লগইন করা ইউজার কার্টের মালিক কি না যাচাই।",
+      "Juice Shop-এর Score Board-এ সংশ্লিষ্ট চ্যালেঞ্জ সমাধান হিসেবে দেখাবে।",
+      "এই কৌশল শুধু ল্যাবে ও নিজের অ্যাপে; আসল দোকানে চেষ্টা করা অপরাধ।"
+    ],
+    "lessons": ["payment-logic-vulnerabilities", "burp-zap-intercept", "auth-authorization-testing", "ethics-responsible-disclosure"]
+  },
+  {
+    "id": "bola-crapi-vampi",
+    "title": "crAPI বা VAmPI-তে BOLA খুঁজে বের করা (লোকাল)",
+    "level": 4,
+    "target": "নিজের কম্পিউটারে Docker-এ চলা OWASP crAPI বা VAmPI",
+    "targetUrl": "https://github.com/OWASP/crAPI",
+    "goal": "দুইটি টেস্ট অ্যাকাউন্ট দিয়ে প্রমাণ করা যে একজন ইউজার শুধু ID বদলে অন্যজনের ডেটা দেখতে পারে, আর এর জন্য একটি পুনরুৎপাদনযোগ্য টেস্ট কেস লেখা।",
+    "steps": [
+      "README অনুযায়ী Docker দিয়ে crAPI লোকালে চালান; সহজ বিকল্প VAmPI: docker run -p 127.0.0.1:5000:5000 erev0s/vampi:latest।",
+      "দুইটি টেস্ট অ্যাকাউন্ট বানান: user-a আর user-b (বানানো তথ্য দিয়ে)।",
+      "user-a হিসেবে লগইন করে টোকেন Postman environment-এ রাখুন; user-a-র নিজের রিসোর্স (crAPI-তে গাড়ি, VAmPI-তে বই) দেখার রিকোয়েস্ট পাঠান।",
+      "user-b-র রিসোর্সের ID বা নাম খুঁজে বের করুন (অ্যাপের অন্য কোনো রেসপন্স থেকে যা ফাঁস হয়)।",
+      "user-a-র টোকেন রেখে শুধু ID বদলে user-b-র রিসোর্স চান; Status ও বডি দেখুন।",
+      "Postman-এ এমন একটি assertion লিখুন যা 403 বা 404 প্রত্যাশা করে, যাতে বাগ থাকলে টেস্ট ফেল করে।"
+    ],
+    "solution": [
+      "crAPI: কমিউনিটি পোস্টের রেসপন্সে অন্য ইউজারদের vehicle ID ফাঁস হয়; সেই ID দিয়ে vehicle location এন্ডপয়েন্টে অন্যের গাড়ির অবস্থান দেখা যায়।",
+      "VAmPI: books এন্ডপয়েন্টে অন্য ইউজারের বইয়ের নাম দিলে তার secret দেখা যায়, যদিও বইটি আপনার নয়।",
+      "দুটোতেই সার্ভার 200 ফেরত দেয়, অথচ 403 বা 404 হওয়া উচিত ছিল: এটাই BOLA (OWASP API Security Top 10-এর প্রথম ঝুঁকি)।",
+      "প্রতিকার: প্রতিটি রিকোয়েস্টে টোকেনের ইউজার আর রিসোর্সের মালিক মিলিয়ে দেখা; অনুমানযোগ্য ID-র ওপর নিরাপত্তা নির্ভর না করা।",
+      "পেমেন্ট অ্যাপে একই বাগ মানে অন্যের অর্ডার, ইনভয়েস বা রিফান্ড দেখা বা বদলানো।"
+    ],
+    "lessons": ["auth-authorization-testing", "owasp-top-10-intro", "sensitive-data-exposure"]
+  },
+  {
+    "id": "webhook-signature-replay",
+    "title": "নিজের সার্ভারে Webhook signature ও replay টেস্ট",
+    "level": 4,
+    "target": "ল্যাব ৪-এ বানানো নিজের লোকাল Express Webhook সার্ভার",
+    "targetUrl": "https://docs.stripe.com/webhooks",
+    "goal": "নিজের Webhook endpoint সই ছাড়া, ভুল সই, বদলানো বডি আর পুরোনো (replay) ইভেন্ট বাতিল করে কি না, এবং ডুপ্লিকেট নিরাপদে সামলায় কি না যাচাই করা।",
+    "steps": [
+      "ল্যাব ৪-এর সার্ভার আর stripe listen চালু রাখুন; একটি সফল ইভেন্ট trigger করে বেসলাইন দেখুন।",
+      "Postman বা curl দিয়ে Stripe-Signature হেডার ছাড়া একটি নকল payment_intent.succeeded JSON পাঠান।",
+      "একটি বানানো, ভুল Stripe-Signature হেডার দিয়ে আবার পাঠান।",
+      "সার্ভারে সাময়িক লগ দিয়ে একটি আসল ইভেন্টের হেডার ও raw body নিন, বডির amount বদলে একই হেডারসহ পাঠান।",
+      "অপরিবর্তিত হেডার ও বডি টলারেন্সের (ডিফল্ট ৫ মিনিট) পরে আবার পাঠান।",
+      "stripe events resend দিয়ে বৈধ ডুপ্লিকেট পাঠিয়ে অর্ডার একবারই পূরণ হচ্ছে কি না দেখুন।",
+      "প্রতিটি কেসের প্রত্যাশিত ও আসল Status Code টেবিলে লিখুন; কাজ শেষে সাময়িক লগ মুছে ফেলুন।"
+    ],
+    "solution": [
+      "সই ছাড়া, ভুল সই আর বদলানো বডি: constructEvent ত্রুটি দেয়, সার্ভারের উচিত 400 ফেরত দেওয়া আর অর্ডার না বদলানো।",
+      "টলারেন্সের পরে replay: সইয়ের timestamp পুরোনো হওয়ায় যাচাই ব্যর্থ হয়, তাই 400।",
+      "বৈধ ডুপ্লিকেট: সই ঠিক, তাই যাচাই পাস করে; event.id আগে দেখা হয়ে থাকলে কিছু না বদলে 200 দেওয়া উচিত।",
+      "যদি নকল ইভেন্টে অর্ডার 'Paid' হয়ে যায়, সেটা Critical বাগ: যে কেউ বিনা পয়সায় অর্ডার পূরণ করাতে পারত।",
+      "whsec_ secret আর raw body কখনো স্থায়ী লগ, স্ক্রিনশট বা Git-এ রাখবেন না।"
+    ],
+    "lessons": ["webhook-security", "webhook-signature-verification", "webhook-test-cases"]
+  },
+  {
+    "id": "newman-github-actions",
+    "title": "Newman ও GitHub Actions দিয়ে API টেস্ট পাইপলাইন",
+    "level": 5,
+    "target": "নিজের GitHub রিপোজিটরি + JSONPlaceholder বা নিজের Stripe Test Mode",
+    "targetUrl": "https://docs.github.com/en/actions",
+    "goal": "প্রতিটি push-এ Postman collection Newman দিয়ে নিজে চলবে, HTML রিপোর্ট artifact হিসেবে থাকবে, আর কোনো secret কোডে থাকবে না।",
+    "steps": [
+      "ল্যাব ১ বা ৩-এর collection ও environment Export করে রিপোজিটরির postman/ ফোল্ডারে রাখুন; environment-এ key-এর মান খালি রাখুন।",
+      "Stripe ব্যবহার করলে রিপোজিটরির Settings → Secrets and variables → Actions-এ STRIPE_TEST_KEY নামে Test Mode key রাখুন।",
+      ".github/workflows/api-tests.yml বানান: on push, ubuntu-latest, actions/checkout, actions/setup-node।",
+      "ধাপ যোগ করুন: npm install -g newman newman-reporter-htmlextra।",
+      "রান ধাপ: newman run postman/collection.json -e postman/env.json --env-var \"secret_key=${{ secrets.STRIPE_TEST_KEY }}\" -r cli,htmlextra --reporter-htmlextra-export reports/report.html",
+      "actions/upload-artifact দিয়ে reports/ ফোল্ডার রাখুন (if: always() দিন, যাতে ফেল হলেও রিপোর্ট থাকে)।",
+      "push করে Actions ট্যাবে রান দেখুন; একটি assertion ইচ্ছা করে ভুল করে ফেল হওয়াও দেখুন।"
+    ],
+    "solution": [
+      "সঠিক সেটআপে Actions ট্যাবে সবুজ টিক আর Artifacts অংশে report.html ডাউনলোডযোগ্য।",
+      "কোনো assertion ফেল করলে Newman non-zero exit code দেয়, তাই জব লাল হয়: এটাই কাঙ্ক্ষিত আচরণ।",
+      "GitHub লগে secret স্বয়ংক্রিয়ভাবে *** দিয়ে ঢাকা থাকে, তবুও কখনো echo করবেন না।",
+      "সাধারণ ভুল: environment ফাইলে key রেখে কমিট করা; ভুলে করলে সঙ্গে সঙ্গে Dashboard থেকে key roll করুন।",
+      "পরের ধাপ: একই ওয়ার্কফ্লোতে Playwright টেস্ট যোগ করে ক্যাপস্টোনের CI অংশ শেষ করুন।"
+    ],
+    "lessons": ["cicd-github-actions", "newman-cli-reports", "postman-collections-environments"]
+  }
+]

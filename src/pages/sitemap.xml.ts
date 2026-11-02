@@ -1,11 +1,12 @@
 import type {APIRoute} from 'astro';
 
+import {allLessons, lessonHref} from '../lib/course';
 import {postHref, publishedPosts, tagHref, tagsOf} from '../lib/posts';
 import {absoluteUrl} from '../lib/site-url';
 
 /**
  * `/sitemap.xml`, built with the site: every page in `src/pages/` (found
- * automatically), every post and every tag page. A page that must stay out of
+ * automatically), every lesson, every post and every tag page. A page that must stay out of
  * search (it has `<Base noindex>`) goes in `EXCLUDE` too.
  *
  * Search engines need absolute URLs: without a known address (`npm run dev`,
@@ -24,8 +25,10 @@ const escape = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&l
 
 export const GET: APIRoute = async () => {
   const posts = await publishedPosts();
+  const lessons = await allLessons();
   const entries: {path: string; lastmod?: Date}[] = [
     ...pagePaths.map(path => ({path})),
+    ...lessons.map(lesson => ({path: lessonHref(lesson)})),
     ...posts.map(post => ({path: postHref(post), lastmod: post.data.updatedAt ?? post.data.publishedAt})),
     ...tagsOf(posts).map(tag => ({path: tagHref(tag.label)})),
   ];

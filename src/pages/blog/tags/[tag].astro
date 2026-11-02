@@ -5,6 +5,7 @@
  */
 import PostCard from '../../../components/PostCard.astro';
 import Base from '../../../layouts/Base.astro';
+import {bn} from '../../../lib/course';
 import {publishedPosts, tagsOf} from '../../../lib/posts';
 
 export async function getStaticPaths() {
@@ -15,14 +16,14 @@ const {tag} = Astro.props;
 const count = tag.posts.length;
 ---
 
-<Base title={`Posts tagged #${tag.label}`} description={`${count} ${count === 1 ? 'post' : 'posts'} tagged #${tag.label}.`}>
+<Base title={`#${tag.label} বিষয়ের লেখা`} description={`#${tag.label} বিষয়ে ${bn(count)}টি লেখা।`}>
   <section class="wrap section">
-    <p class="eyebrow"><a href="/blog/">Blog</a></p>
+    <p class="eyebrow"><a href="/blog/">ব্লগ</a></p>
     <h1>#{tag.label}</h1>
-    <p class="lede">{count} {count === 1 ? 'post' : 'posts'}.</p>
+    <p class="lede">{bn(count)}টি লেখা</p>
     <div class="grid grid-3">
       {tag.posts.map((post, i) => <PostCard post={post} as="h2" eager={i < 3} />)}
     </div>
-    <p><a href="/blog/">← All posts</a></p>
+    <p><a href="/blog/">← সব লেখা</a></p>
   </section>
 </Base>

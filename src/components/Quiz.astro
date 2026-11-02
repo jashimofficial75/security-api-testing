@@ -1,0 +1,198 @@
+---
+/**
+ * The five-question quiz at the end of a lesson (front matter `quiz`). The
+ * questions, options and explanations are in the HTML; the site script
+ * (src/scripts/site.ts) locks a question once answered, marks right and wrong
+ * with a word and an icon, reveals the explanation in a live region and, after
+ * the fifth, shows the score and marks the lesson done.
+ */
+import {bn} from '../lib/course';
+
+interface Props {
+  lesson: string;
+  questions: {q: string; options: string[]; answer: number; explain: string}[];
+}
+
+const {lesson, questions} = Astro.props;
+const LETTERS = ['ক', 'খ', 'গ', 'ঘ'];
+---
+
+<section class="quiz" data-quiz data-lesson={lesson} aria-labelledby="quiz-title">
+  <h2 id="quiz-title">কুইজ: নিজেকে যাচাই করুন</h2>
+  <p class="muted">{bn(questions.length)}টি প্রশ্ন। উত্তর বাছাই করলেই সঙ্গে সঙ্গে ব্যাখ্যা দেখবেন।</p>
+  <ol class="quiz-list">
+    {
+      questions.map((question, qi) => (
+        <li class="quiz-item" data-quiz-item data-answer={question.answer}>
+          <fieldset>
+            <legend class="quiz-question">
+              <span class="quiz-number">প্রশ্ন {bn(qi + 1)}.</span> {question.q}
+            </legend>
+            <div class="quiz-options">
+              {question.options.map((option, oi) => (
+                <button type="button" class="quiz-option" data-quiz-option data-index={oi}>
+                  <span class="quiz-letter" data-letter>
+                    {LETTERS[oi]}
+                  </span>
+                  <span class="quiz-text">{option}</span>
+                  <span class="quiz-verdict" data-verdict />
+                </button>
+              ))}
+            </div>
+            <div class="quiz-feedback" aria-live="polite">
+              <p class="quiz-status" data-quiz-status />
+              <p class="quiz-explain" data-quiz-explain hidden>
+                <strong>ব্যাখ্যা:</strong> {question.explain}
+              </p>
+            </div>
+          </fieldset>
+        </li>
+      ))
+    }
+  </ol>
+  <div class="quiz-result" data-quiz-result aria-live="polite" hidden>
+    <p data-quiz-score></p>
+    <button type="button" class="button outline" data-quiz-retry>আবার চেষ্টা করুন</button>
+  </div>
+</section>
+
+<style>
+  .quiz {
+    margin-top: 3rem;
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+  }
+
+  .quiz-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  .quiz-question {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    padding: 0;
+  }
+
+  .quiz-number {
+    color: var(--primary);
+  }
+
+  .quiz-options {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .quiz-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 48px;
+    width: 100%;
+    padding: 0.5rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .quiz-option:hover:not([aria-disabled='true']) {
+    border-color: var(--primary);
+  }
+
+  .quiz-option[aria-disabled='true'] {
+    cursor: default;
+  }
+
+  .quiz-letter {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    background: var(--surface-2);
+    font-weight: 600;
+  }
+
+  .quiz-text {
+    flex: 1;
+  }
+
+  .quiz-verdict {
+    flex: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .quiz-option.is-correct {
+    border: 2px solid var(--success);
+    background: color-mix(in srgb, var(--success) 10%, var(--bg));
+  }
+
+  .quiz-option.is-correct .quiz-verdict {
+    color: var(--success);
+  }
+
+  .quiz-option.is-wrong {
+    border: 2px solid var(--danger);
+    background: color-mix(in srgb, var(--danger) 10%, var(--bg));
+  }
+
+  .quiz-option.is-wrong .quiz-verdict {
+    color: var(--danger);
+  }
+
+  .quiz-feedback p {
+    margin: 0.5rem 0 0;
+  }
+
+  .quiz-feedback p:empty {
+    display: none;
+  }
+
+  .quiz-status {
+    font-weight: 600;
+  }
+
+  .quiz-status.is-correct {
+    color: var(--success);
+  }
+
+  .quiz-status.is-wrong {
+    color: var(--danger);
+  }
+
+  .quiz-explain {
+    padding: 0.6rem 0.85rem;
+    border-radius: 8px;
+    background: var(--surface-2);
+  }
+
+  .quiz-result {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border: 2px solid var(--success);
+    border-radius: 12px;
+    font-weight: 600;
+  }
+
+  .quiz-result p {
+    margin-top: 0;
+  }
+</style>

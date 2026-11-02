@@ -1,0 +1,64 @@
+---
+/**
+ * One lesson in a grid: a whole-card link with its level colour on top, the
+ * number, time and a ✔ the progress script shows once it is done.
+ */
+import {bn, duration, type Lesson, lessonHref, searchText} from '../lib/course';
+import LevelBadge from './LevelBadge.astro';
+
+interface Props {
+  lesson: Lesson;
+  /** `h2` under a page's `<h1>`, `h3` under a section's `<h2>`. */
+  as?: 'h2' | 'h3';
+  /** Searchable on /lessons/. */
+  searchable?: boolean;
+}
+
+const {lesson, as: Heading = 'h3', searchable = false} = Astro.props;
+const {order, level, week, title, description, minutes} = lesson.data;
+---
+
+<a
+  class:list={['card', 'card-link', 'card-level', 'lesson-card', `lvl-${level}`]}
+  href={lessonHref(lesson)}
+  data-lesson-id={lesson.id}
+  data-lesson-card={searchable ? '' : undefined}
+  data-level={searchable ? String(level) : undefined}
+  data-search={searchable ? searchText(lesson) : undefined}
+>
+  <span class="lesson-card-top">
+    <LevelBadge level={level} />
+    <span class="done-mark" data-done-mark hidden>✔ সম্পন্ন</span>
+  </span>
+  <Heading class="card-title">লেসন {bn(order)}: {title}</Heading>
+  <span class="muted small lesson-card-desc">{description}</span>
+  <span class="meta lesson-card-meta">সপ্তাহ {bn(week)} · {duration(minutes)}</span>
+</a>
+
+<style>
+  .lesson-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .lesson-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .lesson-card-desc {
+    display: block;
+  }
+
+  .lesson-card-meta {
+    margin-top: auto;
+    padding-top: 0.5rem;
+  }
+
+  .lesson-card.is-done .card-title {
+    color: var(--text-muted);
+  }
+</style>

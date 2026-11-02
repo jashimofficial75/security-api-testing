@@ -1,0 +1,92 @@
+---
+/** Practice labs (src/content/labs.json): safe targets only, solution folded away. */
+import {getCollection} from 'astro:content';
+
+import LevelBadge from '../components/LevelBadge.astro';
+import Base from '../layouts/Base.astro';
+import {allLessons, bn} from '../lib/course';
+
+const labs = (await getCollection('labs')).sort((a, b) => a.data.level - b.data.level);
+const lessons = new Map((await allLessons()).map(lesson => [lesson.id, lesson]));
+---
+
+<Base title="প্র্যাকটিস ল্যাব" description="ফ্রি ও নিরাপদ টার্গেটে হাতেকলমে অনুশীলন: Stripe Test Mode, JSONPlaceholder, OWASP Juice Shop, crAPI আর নিজের লোকাল সার্ভার। প্রতিটি ল্যাবে ধাপ আর সমাধান।">
+  <div class="wrap">
+    <header class="page-head">
+      <h1>প্র্যাকটিস ল্যাব</h1>
+      <p class="lede">{bn(labs.length)}টি ল্যাব, সহজ থেকে কঠিন। আগে নিজে চেষ্টা করুন, আটকে গেলে তবেই "সমাধান দেখুন" খুলুন।</p>
+      <div class="callout callout-danger" role="note">
+        <p class="callout-title"><span aria-hidden="true">⚠️</span><strong>সতর্কতা: শুধু নিজের বা অনুমতিপ্রাপ্ত পরিবেশে টেস্ট করুন</strong></p>
+        <p>এই ল্যাবগুলো শুধু নিজের Stripe Test Mode, নিজের কম্পিউটারে চালানো অ্যাপ আর ইচ্ছাকৃতভাবে দুর্বল ফ্রি ল্যাবের জন্য। একই কৌশল কোনো আসল সাইটে অনুমতি ছাড়া প্রয়োগ করা আইনত অপরাধ।</p>
+      </div>
+    </header>
+    <div class="grid grid-2">
+      {
+        labs.map((lab, i) => (
+          <article class:list={['card', 'card-level', 'lab', `lvl-${lab.data.level}`]} aria-labelledby={`lab-${lab.id}`}>
+            <LevelBadge level={lab.data.level} />
+            <h2 id={`lab-${lab.id}`} class="card-title">
+              ল্যাব {bn(i + 1)}: {lab.data.title}
+            </h2>
+            <p class="meta">
+              টার্গেট:{' '}
+              <a href={lab.data.targetUrl} target="_blank" rel="noopener noreferrer">
+                {lab.data.target}
+                <span class="sr-only"> (নতুন ট্যাবে খুলবে)</span> ↗
+              </a>
+            </p>
+            <p>
+              <strong>লক্ষ্য:</strong> {lab.data.goal}
+            </p>
+            <h3>ধাপসমূহ</h3>
+            <ol>
+              {lab.data.steps.map(step => (
+                <li>{step}</li>
+              ))}
+            </ol>
+            <details class="accordion">
+              <summary>সমাধান দেখুন</summary>
+              <ol>
+                {lab.data.solution.map(step => (
+                  <li>{step}</li>
+                ))}
+              </ol>
+            </details>
+            {lab.data.lessons.length > 0 && (
+              <p class="meta">
+                আগে পড়ুন:{' '}
+                {lab.data.lessons
+                  .filter(id => lessons.has(id))
+                  .map((id, j) => (
+                    <>
+                      {j > 0 && ', '}
+                      <a href={`/lessons/${id}/`}>লেসন {bn(lessons.get(id)!.data.order)}</a>
+                    </>
+                  ))}
+              </p>
+            )}
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</Base>
+
+<style>
+  .lab h3 {
+    font-size: 1rem;
+    margin: 0.75rem 0 0.25rem;
+  }
+
+  .lab ol {
+    padding-left: 1.25rem;
+  }
+
+  .lab .accordion > :not(summary) {
+    margin-inline: 0.75rem;
+  }
+
+  .lab .badge {
+    align-self: flex-start;
+  }
+</style>

@@ -1,0 +1,311 @@
+---
+/**
+ * One lesson: `/lessons/<file name>/`, one page per Markdown file in
+ * src/content/lessons/. Desktop: the course list on the left, the lesson in
+ * the middle, "এই পাতায়" (table of contents) on the right; on a phone the
+ * contents fold into a block at the top. Ends with the quiz and prev/next.
+ */
+import {render} from 'astro:content';
+
+import LevelBadge from '../../components/LevelBadge.astro';
+import Quiz from '../../components/Quiz.astro';
+import {LEVELS} from '../../content/site';
+import Base from '../../layouts/Base.astro';
+import {allLessons, bn, duration, lessonHref} from '../../lib/course';
+import {lessonJsonLd} from '../../lib/json-ld';
+
+export async function getStaticPaths() {
+  const lessons = await allLessons();
+  return lessons.map((lesson, i) => ({
+    params: {slug: lesson.id},
+    props: {lesson, prev: lessons[i - 1], next: lessons[i + 1], lessons},
+  }));
+}
+
+const {lesson, prev, next, lessons} = Astro.props;
+const {order, level, week, title, description, minutes, quiz} = lesson.data;
+const {Content, headings} = await render(lesson);
+const toc = headings.filter(h => h.depth === 2);
+const jsonLd = lessonJsonLd({path: lessonHref(lesson), title, description, minutes, level: LEVELS[level].name});
+---
+
+<Base title={`লেসন ${bn(order)}: ${title}`} description={description} jsonLd={jsonLd}>
+  <div class:list={['wrap', 'lesson-layout', `lvl-${level}`]}>
+    <nav class="lesson-sidebar" aria-label="কোর্সের সব লেসন">
+      <p class="sidebar-title">কোর্সের সব লেসন</p>
+      {
+        LEVELS.map(lvl => (
+          <div class={`lvl-${lvl.id}`}>
+            <p class="sidebar-level">{lvl.name}</p>
+            <ol>
+              {lessons
+                .filter(l => l.data.level === lvl.id)
+                .map(l => (
+                  <li data-lesson-id={l.id}>
+                    <a href={lessonHref(l)} aria-current={l.id === lesson.id ? 'page' : undefined}>
+                      <span class="sidebar-num">{bn(l.data.order)}</span>
+                      <span>{l.data.title}</span>
+                      <span class="done-mark" data-done-mark hidden>
+                        <span aria-hidden="true">✔</span>
+                        <span class="sr-only">সম্পন্ন</span>
+                      </span>
+                    </a>
+                  </li>
+                ))}
+            </ol>
+          </div>
+        ))
+      }
+    </nav>
+
+    <article class="lesson-main">
+      <header class="lesson-head">
+        <p class="lesson-meta">
+          <LevelBadge level={level} />
+          <span class="meta">লেসন {bn(order)} · সপ্তাহ {bn(week)} · আনুমানিক {duration(minutes)}</span>
+        </p>
+        <h1>{title}</h1>
+        <p class="lede">{description}</p>
+      </header>
+
+      {
+        toc.length > 0 && (
+          <details class="accordion toc-mobile">
+            <summary>এই পাতায়</summary>
+            <ol>
+              {toc.map(h => (
+                <li>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                </li>
+              ))}
+            </ol>
+          </details>
+        )
+      }
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      <Quiz lesson={lesson.id} questions={quiz} />
+
+      <p class="complete-row">
+        <button type="button" class="button outline" data-complete-toggle data-lesson={lesson.id} aria-pressed="false">
+          লেসনটি সম্পন্ন হিসেবে চিহ্নিত করুন
+        </button>
+      </p>
+
+      <nav class="lesson-nav" aria-label="আগের ও পরের লেসন">
+        {
+          prev ? (
+            <a class="card card-link" href={lessonHref(prev)} rel="prev">
+              <span class="meta">← আগের লেসন</span>
+              <span class="lesson-nav-title">{prev.data.title}</span>
+            </a>
+          ) : (
+            <span />
+          )
+        }
+        {
+          next ? (
+            <a class="card card-link next" href={lessonHref(next)} rel="next">
+              <span class="meta">পরের লেসন →</span>
+              <span class="lesson-nav-title">{next.data.title}</span>
+            </a>
+          ) : (
+            <a class="card card-link next" href="/capstone/">
+              <span class="meta">এবার →</span>
+              <span class="lesson-nav-title">ক্যাপস্টোন প্রজেক্ট</span>
+            </a>
+          )
+        }
+      </nav>
+    </article>
+
+    {
+      toc.length > 0 && (
+        <aside class="lesson-toc" aria-labelledby="toc-title">
+          <p id="toc-title" class="sidebar-title">এই পাতায়</p>
+          <ol>
+            {toc.map(h => (
+              <li>
+                <a href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+            <li>
+              <a href="#quiz-title">কুইজ</a>
+            </li>
+          </ol>
+        </aside>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  .lesson-layout {
+    display: grid;
+    gap: 2rem;
+    padding-block: 2rem 1rem;
+  }
+
+  .lesson-main {
+    min-width: 0;
+  }
+
+  .lesson-sidebar,
+  .lesson-toc {
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .lesson-layout {
+      grid-template-columns: minmax(0, 1fr) 220px;
+    }
+
+    .lesson-toc {
+      display: block;
+    }
+
+    .toc-mobile {
+      display: none;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .lesson-layout {
+      grid-template-columns: 250px minmax(0, 1fr) 220px;
+    }
+
+    .lesson-sidebar {
+      display: block;
+    }
+  }
+
+  .lesson-sidebar,
+  .lesson-toc {
+    position: sticky;
+    top: 80px;
+    align-self: start;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .sidebar-title {
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+  }
+
+  .sidebar-level {
+    margin: 0.75rem 0 0.25rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--lvl);
+  }
+
+  .lesson-sidebar ol,
+  .lesson-toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .lesson-sidebar a {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 8px;
+    border-left: 3px solid transparent;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .lesson-sidebar a:hover {
+    color: var(--text);
+    background: var(--surface-2);
+  }
+
+  .lesson-sidebar a[aria-current='page'] {
+    color: var(--text);
+    font-weight: 600;
+    background: var(--surface);
+    border-left-color: var(--lvl);
+  }
+
+  .sidebar-num {
+    flex: none;
+    min-width: 1.5rem;
+  }
+
+  .lesson-sidebar .done-mark {
+    margin-left: auto;
+  }
+
+  .lesson-toc {
+    padding-left: 1rem;
+    border-left: 1px solid var(--border);
+  }
+
+  .lesson-toc a {
+    display: block;
+    padding: 0.3rem 0;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .lesson-toc a:hover {
+    color: var(--primary);
+    text-decoration: underline;
+  }
+
+  .lesson-head {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 4px solid var(--lvl);
+  }
+
+  .lesson-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin: 0 0 0.5rem;
+  }
+
+  .toc-mobile ol {
+    margin-top: 0;
+    padding-left: 1.25rem;
+  }
+
+  .complete-row {
+    margin: 1.5rem 0;
+  }
+
+  .lesson-nav {
+    display: grid;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  @media (min-width: 640px) {
+    .lesson-nav {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .lesson-nav a {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .lesson-nav .next {
+    text-align: right;
+  }
+
+  .lesson-nav-title {
+    font-weight: 600;
+    color: var(--text);
+  }
+</style>

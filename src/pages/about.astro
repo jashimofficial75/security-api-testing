@@ -1,23 +1,38 @@
 ---
-import Base from '../layouts/Base.astro';
+/** About (guides/about.md) and the ethics policy (guides/ethics.md, `#ethics`). */
+import {getEntry, render} from 'astro:content';
+
+import Guide from '../components/Guide.astro';
 import {ABOUT} from '../content/site';
+import Base from '../layouts/Base.astro';
+
+const ethics = await getEntry('guides', 'ethics');
+if (!ethics) throw new Error('src/content/guides/ethics.md is missing');
+const {Content: Ethics} = await render(ethics);
 ---
 
 <Base title={ABOUT.title} description={ABOUT.lede}>
-  <article class="wrap narrow section">
-    <h1>{ABOUT.title}</h1>
-    <p class="lede">{ABOUT.lede}</p>
-    {
-      ABOUT.sections.map(section => (
-        <section class="prose-section">
-          <h2>{section.heading}</h2>
-          <p>{section.body}</p>
-        </section>
-      ))
-    }
-    <div class="actions">
-      <a class="button" href="/contact/">Get in touch</a>
-      <a class="button ghost" href="/blog/">Read the blog</a>
+  <Guide id="about" toc={false} />
+  <section class="wrap narrow ethics" aria-labelledby="ethics">
+    <h2 id="ethics">{ethics.data.title}</h2>
+    <p class="lede">{ethics.data.description}</p>
+    <div class="prose">
+      <Ethics />
     </div>
-  </article>
+    <div class="actions">
+      <a class="button" href="/lessons/ethics-responsible-disclosure/">নৈতিকতার লেসন পড়ুন</a>
+      <a class="button outline" href="/contact/">যোগাযোগ করুন</a>
+    </div>
+  </section>
 </Base>
+
+<style>
+  .ethics {
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .ethics .prose {
+    max-width: none;
+  }
+</style>

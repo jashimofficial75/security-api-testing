@@ -1,0 +1,60 @@
+---
+/**
+ * A long-form page from the `guides` collection (src/content/guides/<id>.md):
+ * title, lede, "এই পাতায়" contents and the Markdown. Slot: extra content
+ * before the guide (e.g. the about page's intro).
+ */
+import {getEntry, render} from 'astro:content';
+
+interface Props {
+  id: string;
+  /** Show the table of contents block (long pages). */
+  toc?: boolean;
+}
+
+const {id, toc = true} = Astro.props;
+const entry = await getEntry('guides', id);
+if (!entry) throw new Error(`src/content/guides/${id}.md is missing`);
+const {Content, headings} = await render(entry);
+const sections = headings.filter(h => h.depth === 2);
+---
+
+<article class="wrap narrow section">
+  <header class="guide-head">
+    <h1>{entry.data.title}</h1>
+    <p class="lede">{entry.data.description}</p>
+  </header>
+  {
+    toc && sections.length > 2 && (
+      <details class="accordion" open>
+        <summary>এই পাতায়</summary>
+        <ol class="guide-toc">
+          {sections.map(h => (
+            <li>
+              <a href={`#${h.slug}`}>{h.text}</a>
+            </li>
+          ))}
+        </ol>
+      </details>
+    )
+  }
+  <slot />
+  <div class="prose">
+    <Content />
+  </div>
+</article>
+
+<style>
+  .guide-head {
+    margin-bottom: 1.5rem;
+  }
+
+  .guide-toc {
+    margin-top: 0;
+    padding-left: 1.25rem;
+  }
+
+  .prose {
+    max-width: none;
+  }
+</style>

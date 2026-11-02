@@ -1,0 +1,41 @@
+[
+  {"id": "stripe-testing", "group": "Stripe", "title": "Stripe Testing (টেস্ট কার্ড)", "url": "https://docs.stripe.com/testing", "note": "সব টেস্ট কার্ড, decline কোড, 3D Secure আর বিভিন্ন দেশের কার্ডের অফিসিয়াল তালিকা।", "lang": "en"},
+  {"id": "stripe-api-reference", "group": "Stripe", "title": "Stripe API Reference", "url": "https://docs.stripe.com/api", "note": "প্রতিটি অবজেক্ট ও এন্ডপয়েন্টের বিবরণ, প্যারামিটার আর curl উদাহরণ।", "lang": "en"},
+  {"id": "stripe-paymentintent-lifecycle", "group": "Stripe", "title": "PaymentIntent lifecycle", "url": "https://docs.stripe.com/payments/paymentintents/lifecycle", "note": "PaymentIntent-এর স্ট্যাটাস কীভাবে বদলায়, ছবিসহ ব্যাখ্যা।", "lang": "en"},
+  {"id": "stripe-idempotency", "group": "Stripe", "title": "Idempotent requests", "url": "https://docs.stripe.com/api/idempotent_requests", "note": "Idempotency-Key হেডার কীভাবে কাজ করে আর কতক্ষণ মনে রাখা হয়।", "lang": "en"},
+  {"id": "stripe-rate-limits", "group": "Stripe", "title": "Stripe Rate limits", "url": "https://docs.stripe.com/rate-limits", "note": "Test ও Live Mode-এর rate limit; কেন Stripe-এ লোড টেস্ট করা যাবে না।", "lang": "en"},
+  {"id": "stripe-cli-docs", "group": "Stripe", "title": "Stripe CLI", "url": "https://docs.stripe.com/stripe-cli", "note": "ইনস্টল, login, listen, trigger: সব কমান্ডের অফিসিয়াল গাইড।", "lang": "en"},
+  {"id": "stripe-samples", "group": "Stripe", "title": "Stripe Samples (GitHub)", "url": "https://github.com/stripe-samples", "note": "Stripe-এর অফিসিয়াল নমুনা প্রজেক্ট; ক্যাপস্টোনের ডেমো শপ এখান থেকে নিতে পারেন।", "lang": "en"},
+
+  {"id": "postman-learning", "group": "Postman ও API", "title": "Postman Learning Center", "url": "https://learning.postman.com/docs/", "note": "Postman-এর অফিসিয়াল ডক: collection, environment, স্ক্রিপ্ট, Newman।", "lang": "en"},
+  {"id": "postman-academy", "group": "Postman ও API", "title": "Postman Academy", "url": "https://academy.postman.com", "note": "ফ্রি ভিডিও কোর্স ও ব্যাজ; API টেস্টিংয়ের ভিত্তি মজবুত করতে।", "lang": "en"},
+  {"id": "newman-github", "group": "Postman ও API", "title": "Newman (GitHub)", "url": "https://github.com/postmanlabs/newman", "note": "Newman-এর সব অপশন ও রিপোর্টারের বিবরণ।", "lang": "en"},
+  {"id": "mdn-http", "group": "Postman ও API", "title": "MDN: HTTP", "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP", "note": "HTTP মেথড, Status Code, হেডারের নির্ভরযোগ্য রেফারেন্স।", "lang": "en"},
+  {"id": "jsonplaceholder", "group": "Postman ও API", "title": "JSONPlaceholder", "url": "https://jsonplaceholder.typicode.com", "note": "ফ্রি নকল REST API; প্রথম GET/POST/PUT/DELETE অনুশীলনের জন্য আদর্শ।", "lang": "en"},
+  {"id": "swagger-petstore", "group": "Postman ও API", "title": "Swagger Petstore", "url": "https://petstore.swagger.io", "note": "OpenAPI ডকুমেন্টেশন দেখতে ও পড়তে শেখার নমুনা API।", "lang": "en"},
+  {"id": "openapi-spec", "group": "Postman ও API", "title": "OpenAPI Specification", "url": "https://swagger.io/specification/", "note": "Contract testing-এর ভিত্তি OpenAPI ফরম্যাটের অফিসিয়াল বিবরণ।", "lang": "en"},
+
+  {"id": "stripe-webhooks", "group": "Webhook", "title": "Stripe Webhooks", "url": "https://docs.stripe.com/webhooks", "note": "Webhook endpoint তৈরি, signature যাচাই, retry ও best practice।", "lang": "en"},
+  {"id": "webhook-site", "group": "Webhook", "title": "webhook.site", "url": "https://webhook.site", "note": "ইনস্টল ছাড়াই আসা Webhook রিকোয়েস্ট দেখার ফ্রি টুল; শুধু টেস্ট ডেটা পাঠান।", "lang": "en"},
+  {"id": "ngrok-docs", "group": "Webhook", "title": "ngrok Docs", "url": "https://ngrok.com/docs", "note": "লোকাল সার্ভারকে পাবলিক URL দিয়ে Webhook গ্রহণের নির্দেশনা।", "lang": "en"},
+
+  {"id": "playwright-intro", "group": "অটোমেশন", "title": "Playwright: Getting started", "url": "https://playwright.dev/docs/intro", "note": "ইনস্টল থেকে প্রথম টেস্ট পর্যন্ত অফিসিয়াল গাইড।", "lang": "en"},
+  {"id": "playwright-api-testing", "group": "অটোমেশন", "title": "Playwright API testing", "url": "https://playwright.dev/docs/api-testing", "note": "Playwright দিয়ে সরাসরি API টেস্ট লেখার পদ্ধতি।", "lang": "en"},
+  {"id": "k6-docs", "group": "অটোমেশন", "title": "Grafana k6 Docs", "url": "https://grafana.com/docs/k6/latest/", "note": "লোড টেস্ট স্ক্রিপ্ট, threshold ও ফল বিশ্লেষণ।", "lang": "en"},
+  {"id": "github-actions-docs", "group": "অটোমেশন", "title": "GitHub Actions Docs", "url": "https://docs.github.com/en/actions", "note": "ওয়ার্কফ্লো, Secrets ও artifact দিয়ে CI-তে টেস্ট চালানো।", "lang": "en"},
+
+  {"id": "owasp-top-ten", "group": "OWASP ও সিকিউরিটি", "title": "OWASP Top 10", "url": "https://owasp.org/www-project-top-ten/", "note": "ওয়েব অ্যাপের সবচেয়ে গুরুত্বপূর্ণ ১০টি ঝুঁকির তালিকা।", "lang": "en"},
+  {"id": "owasp-api-security", "group": "OWASP ও সিকিউরিটি", "title": "OWASP API Security Top 10", "url": "https://owasp.org/API-Security/", "note": "BOLA, Broken Authentication-সহ API-র প্রধান ঝুঁকি।", "lang": "en"},
+  {"id": "owasp-cheatsheets", "group": "OWASP ও সিকিউরিটি", "title": "OWASP Cheat Sheet Series", "url": "https://cheatsheetseries.owasp.org", "note": "প্রতিরোধের ব্যবহারিক নির্দেশিকা: authentication, input validation, logging ইত্যাদি।", "lang": "en"},
+  {"id": "owasp-wstg", "group": "OWASP ও সিকিউরিটি", "title": "OWASP Web Security Testing Guide", "url": "https://owasp.org/www-project-web-security-testing-guide/", "note": "সিকিউরিটি টেস্ট কেস লেখার বিস্তারিত গাইড।", "lang": "en"},
+  {"id": "portswigger-academy", "group": "OWASP ও সিকিউরিটি", "title": "PortSwigger Web Security Academy", "url": "https://portswigger.net/web-security", "note": "ফ্রি পাঠ ও অনলাইন ল্যাব; business logic অংশ পেমেন্ট QA-র জন্য খুব কাজের।", "lang": "en"},
+  {"id": "pci-ssc", "group": "OWASP ও সিকিউরিটি", "title": "PCI Security Standards Council", "url": "https://www.pcisecuritystandards.org", "note": "PCI DSS-এর অফিসিয়াল উৎস; কার্ড ডেটা সুরক্ষার মানদণ্ড।", "lang": "en"},
+
+  {"id": "juice-shop", "group": "প্র্যাকটিস ল্যাব", "title": "OWASP Juice Shop", "url": "https://owasp.org/www-project-juice-shop/", "note": "ইচ্ছাকৃতভাবে দুর্বল অনলাইন শপ; কার্ট ও দাম বদলানোর মতো লজিক বাগ অনুশীলন। লোকালে Docker-এ চালান।", "lang": "en"},
+  {"id": "crapi", "group": "প্র্যাকটিস ল্যাব", "title": "OWASP crAPI", "url": "https://github.com/OWASP/crAPI", "note": "ইচ্ছাকৃতভাবে দুর্বল API; BOLA ও API Security Top 10 অনুশীলন।", "lang": "en"},
+  {"id": "vampi", "group": "প্র্যাকটিস ল্যাব", "title": "VAmPI", "url": "https://github.com/erev0s/VAmPI", "note": "ছোট, হালকা দুর্বল REST API; Docker-এ এক কমান্ডে চলে।", "lang": "en"},
+  {"id": "dvwa", "group": "প্র্যাকটিস ল্যাব", "title": "DVWA", "url": "https://github.com/digininja/DVWA", "note": "ক্লাসিক দুর্বল ওয়েব অ্যাপ; বেসিক ওয়েব দুর্বলতা চেনার জন্য।", "lang": "en"},
+
+  {"id": "sslcommerz-developer", "group": "বাংলাদেশি গেটওয়ে", "title": "SSLCommerz Developer", "url": "https://developer.sslcommerz.com", "note": "SSLCommerz-এর sandbox, API ও IPN (Webhook-এর মতো) ডকুমেন্টেশন।", "lang": "en"},
+  {"id": "bkash-developer", "group": "বাংলাদেশি গেটওয়ে", "title": "bKash Developer Portal", "url": "https://developer.bka.sh", "note": "bKash Payment Gateway API ও sandbox-এর অফিসিয়াল ডক।", "lang": "en"}
+]

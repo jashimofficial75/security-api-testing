@@ -7,7 +7,7 @@
 import Base from '../layouts/Base.astro';
 import {CONTACT} from '../content/site';
 
-const mailto = `mailto:${CONTACT.email}?subject=${encodeURIComponent(CONTACT.subject)}`;
+const mailto = CONTACT.email ? `mailto:${CONTACT.email}?subject=${encodeURIComponent(CONTACT.subject)}` : null;
 const formUrl = /^https:\/\//.test(CONTACT.formUrl) ? CONTACT.formUrl : null;
 ---
 
@@ -16,12 +16,59 @@ const formUrl = /^https:\/\//.test(CONTACT.formUrl) ? CONTACT.formUrl : null;
     <h1>{CONTACT.title}</h1>
     <p class="lede">{CONTACT.lede}</p>
     <div class="card contact-card">
-      <h2>Email us</h2>
-      <p><a href={mailto}>{CONTACT.email}</a></p>
-      <div class="actions">
-        <a class="button" href={mailto}>Write an email</a>
-        {formUrl && <a class="button ghost" href={formUrl} rel="noopener">Use the contact form</a>}
-      </div>
+      {
+        mailto || formUrl ? (
+          <>
+            <h2>আমাদের লিখুন</h2>
+            {mailto && (
+              <p>
+                <a href={mailto}>{CONTACT.email}</a>
+              </p>
+            )}
+            <div class="actions">
+              {mailto && (
+                <a class="button" href={mailto}>
+                  ইমেইল লিখুন
+                </a>
+              )}
+              {formUrl && (
+                <a class="button outline" href={formUrl} rel="noopener noreferrer" target="_blank">
+                  যোগাযোগ ফর্ম খুলুন<span class="sr-only"> (নতুন ট্যাবে খুলবে)</span>
+                </a>
+              )}
+            </div>
+          </>
+        ) : (
+          <>
+            <h2>যোগাযোগের ঠিকানা শীঘ্রই যোগ হবে</h2>
+            <p class="muted">ততদিন পর্যন্ত লেসন, ল্যাব আর চিটশিট দিয়ে শেখা চালিয়ে যান।</p>
+          </>
+        )
+      }
+    </div>
+    <div class="card note">
+      <h2>লেখার আগে মনে রাখুন</h2>
+      <ul>
+        <li>কোনো API Key, Secret Key, পাসওয়ার্ড বা কার্ডের তথ্য কখনো পাঠাবেন না, এমনকি Test Mode-এর কী-ও না।</li>
+        <li>কোনো লেসনে ভুল পেলে লেসনের নাম আর কোন অংশে ভুল, সেটা লিখুন।</li>
+        <li>কোনো আসল সাইটের নিরাপত্তা দুর্বলতা পেলে আমাদের নয়, সেই প্রতিষ্ঠানের Responsible Disclosure পদ্ধতিতে জানান (<a href="/lessons/ethics-responsible-disclosure/">লেসন ২০ দেখুন</a>)।</li>
+      </ul>
     </div>
   </section>
 </Base>
+
+<style>
+  .contact-card,
+  .note {
+    margin-top: 1.5rem;
+  }
+
+  .card h2 {
+    font-size: 1.2rem;
+  }
+
+  .note ul {
+    padding-left: 1.25rem;
+    margin: 0;
+  }
+</style>

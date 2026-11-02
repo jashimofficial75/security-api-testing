@@ -13,13 +13,13 @@ const posts = await publishedPosts();
 const tags = tagsOf(posts);
 ---
 
-<Base title="Blog" description="Stories, guides and updates.">
+<Base title="ব্লগ" description="পেমেন্ট টেস্টিং, API আর QA ক্যারিয়ার নিয়ে নতুন লেখা, কোর্সের আপডেট আর টিপস।">
   <section class="wrap section">
-    <h1>Blog</h1>
-    <p class="lede">Stories, guides and updates.</p>
+    <h1>ব্লগ</h1>
+    <p class="lede">কোর্সের আপডেট, টিপস আর QA ক্যারিয়ার নিয়ে লেখা।</p>
     {
       tags.length > 0 && (
-        <nav aria-label="Topics">
+        <nav aria-label="বিষয়">
           <ul class="chips">
             {tags.map(tag => (
               <li>
@@ -38,7 +38,7 @@ const tags = tagsOf(posts);
           ))}
         </div>
       ) : (
-        <p class="muted">No posts yet. Check back soon.</p>
+        <p class="muted">এখনো কোনো লেখা নেই। শীঘ্রই আসছে।</p>
       )
     }
   </section>

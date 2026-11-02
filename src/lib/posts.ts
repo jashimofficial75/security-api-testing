@@ -35,9 +35,9 @@ export function tagsOf(posts: BlogPost[]): {slug: string; label: string; posts: 
   return [...tags.values()].sort((a, b) => a.label.localeCompare(b.label));
 }
 
-/** "9 September 2026", in UTC so the build machine's timezone never shifts it. */
+/** "৯ সেপ্টেম্বর ২০২৬", in UTC so the build machine's timezone never shifts it. */
 export function formatDate(date: Date): string {
-  return new Intl.DateTimeFormat('en-GB', {day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'}).format(date);
+  return new Intl.DateTimeFormat('bn-BD', {day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'}).format(date);
 }
 
 /** About 230 words a minute, from the Markdown source. */

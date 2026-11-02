@@ -1,0 +1,137 @@
+---
+/**
+ * The 10-week plan as a vertical timeline: one card per week in its level's
+ * colour, with that week's lessons (✔ once done in this browser).
+ */
+import {LEVELS, WEEKS} from '../content/site';
+import Base from '../layouts/Base.astro';
+import {allLessons, bn, duration, lessonHref} from '../lib/course';
+
+const lessons = await allLessons();
+---
+
+<Base title="কোর্স রোডম্যাপ: ১০ সপ্তাহের ছক" description="১০ সপ্তাহে Beginner থেকে Advanced: কোন সপ্তাহে কোন লেসন, কত সময়, আর সপ্তাহ শেষে কী পারবেন। আপনার অগ্রগতিও এখানে দেখুন।">
+  <div class="wrap">
+    <header class="page-head">
+      <h1>কোর্স রোডম্যাপ: ১০ সপ্তাহের ছক</h1>
+      <p class="lede">
+        সপ্তাহে ৬–৮ ঘণ্টা সময় দিলে ১০ সপ্তাহে পুরো কোর্স শেষ হবে। নিজের গতিতে চলুন: চাকরির পাশাপাশি হলে প্রতিটি সপ্তাহ দুই সপ্তাহে ভাগ করে নিন।
+      </p>
+      <div class="overall card">
+        <p class="overall-label"><strong>আপনার অগ্রগতি:</strong> <span data-progress-text>এখনো কোনো লেসন শেষ হয়নি</span></p>
+        <progress class="mini-progress" max="100" value="0" data-progress-overall aria-label="পুরো কোর্সের অগ্রগতি"></progress>
+      </div>
+    </header>
+
+    <ol class="timeline">
+      {
+        WEEKS.map(week => {
+          const items = lessons.filter(lesson => lesson.data.week === week.week);
+          const minutes = items.reduce((sum, lesson) => sum + lesson.data.minutes, 0);
+          return (
+            <li class:list={['timeline-item', `lvl-${week.level}`]}>
+              <span class="timeline-dot" aria-hidden="true" />
+              <section class="card card-level" aria-labelledby={`week-${week.week}`}>
+                <p class="week-meta">
+                  <span class="badge">
+                    লেভেল {bn(week.level)}: {LEVELS[week.level].name}
+                  </span>
+                  <span class="meta">{duration(minutes)}</span>
+                </p>
+                <h2 id={`week-${week.week}`}>সপ্তাহ {bn(week.week)}</h2>
+                <p>
+                  <strong>লক্ষ্য:</strong> {week.goal}
+                </p>
+                <ul class="week-lessons">
+                  {items.map(lesson => (
+                    <li data-lesson-id={lesson.id}>
+                      <a href={lessonHref(lesson)}>
+                        লেসন {bn(lesson.data.order)}: {lesson.data.title}
+                      </a>
+                      <span class="done-mark" data-done-mark hidden>
+                        ✔ সম্পন্ন
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            </li>
+          );
+        })
+      }
+      <li class="timeline-item lvl-5">
+        <span class="timeline-dot" aria-hidden="true"></span>
+        <section class="card card-level" aria-labelledby="week-final">
+          <h2 id="week-final">শেষ ধাপ: ক্যাপস্টোন প্রজেক্ট</h2>
+          <p>সব শিখে একটা পুরো চেকআউট নিজে টেস্ট করুন, রিপোর্ট বানান, GitHub-এ পোর্টফোলিও হিসেবে রাখুন।</p>
+          <a class="button" href="/capstone/">ক্যাপস্টোন প্রজেক্ট দেখুন</a>
+        </section>
+      </li>
+    </ol>
+  </div>
+</Base>
+
+<style>
+  .overall {
+    max-width: 36rem;
+  }
+
+  .overall-label {
+    margin: 0;
+  }
+
+  .timeline {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0 0 0 1.75rem;
+    border-left: 2px solid var(--border);
+    margin-left: 0.5rem;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .timeline-item {
+    position: relative;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: calc(-1.75rem - 8px);
+    top: 1.5rem;
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background: var(--lvl);
+    border: 3px solid var(--bg);
+  }
+
+  .week-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: center;
+    margin: 0 0 0.25rem;
+  }
+
+  .timeline h2 {
+    margin-bottom: 0.25rem;
+  }
+
+  .week-lessons {
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  .week-lessons li {
+    margin-bottom: 0.25rem;
+  }
+
+  .week-lessons .done-mark {
+    margin-left: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .week-lessons li.is-done a {
+    color: var(--text-muted);
+  }
+</style>
